@@ -1,7 +1,7 @@
 var Ballot = artifacts.require("./Ballot.sol");
 
 contract('Ballot', function(accounts) {
-    it("should add two proposals", function(done) {
+    it("add proposals", function(done) {
         var inst;
 
         Ballot.deployed().then(function(instance) {
