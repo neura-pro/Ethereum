@@ -1,0 +1,50 @@
+https://davidburela.wordpress.com/2016/11/18/how-to-install-truffle-testrpc-on-windows-for-blockchain-development/
+https://davidburela.wordpress.com/2016/11/18/configuring-visual-studio-code-for-ethereum-blockchain-development/
+
+
+https://diaryofdennis.com/2016/06/11/how-to-move-and-change-your-ethereum-mining-ethash-dag-folder/
+mklink /D C:\Users\Robin\AppData\Ethash Y:\Ethereum\Ethash
+
+
+geth --testnet --fast --cache=2048 --rpc --datadir "Y:/Ethereum/testnet" console 2>> geth.log
+
+https://github.com/ethereum/go-ethereum/wiki/Private-network
+geth --rpc --nodiscover --maxpeers 0 --datadir "Y:/Ethereum/testnet3" init Y:/Ethereum/testnet3/genesis.json
+geth --rpc --nodiscover --maxpeers 0 --datadir "Y:/Ethereum/testnet3" console 2>> geth.log
+
+miner.start(1)
+miner.stop()
+
+
+
+https://github.com/ethereum/go-ethereum/wiki/Command-Line-Options
+https://github.com/ethereum/wiki/wiki/JavaScript-API
+
+
+
+eth.blockNumber
+
+
+web3.fromWei(eth.getBalance(eth.accounts[0]), "ether")
+eth.sendTransaction({from: eth.accounts[0], to: eth.accounts[1], value: web3.toWei(1, "ether")})
+eth.getTransaction("0x2f3685f89bf2ed7e32b1b96fd78636889e744133b1536f54baf7f2d4cad5ffbf")
+
+
+
+
+
+
+
+https://truffle.readthedocs.io/en/latest/
+http://truffleframework.com/tutorials/upgrading-from-truffle-2-to-3
+
+truffle migrate --reset
+truffle console
+
+var inst; Ballot.deployed().then(function(instance) {inst = instance})
+inst.address
+
+
+
+
+http://chriseth.github.io/browser-solidity/
