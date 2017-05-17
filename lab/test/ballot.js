@@ -67,6 +67,10 @@ contract('Ballot', function(accounts) {
         }).then(function() {
             return inst.assignProxy(accounts[8], {from: accounts[0]});
         }).then(function() {
+            return inst.assignProxy(accounts[8], {from: accounts[0]});}).then(function() {throw new Error();
+        }).catch(function(err) {
+            assert(err.toString().indexOf('invalid opcode') != -1, "no error thrown when double proxy assigment");
+        }).then(function() {
             return inst.assignProxy(accounts[8], {from: accounts[1]});
         }).then(function() {
             return inst.getVoterWeight.call(accounts[8]);
@@ -81,9 +85,17 @@ contract('Ballot', function(accounts) {
         Ballot.deployed().then(function(instance) {
             inst = instance;
         }).then(function() {
-            return inst.vote(0, {from: accounts[2]})
+            return inst.vote(0, {from: accounts[0]});}).then(function() {throw new Error();
+        }).catch(function(err) {
+            assert(err.toString().indexOf('invalid opcode') != -1, "no error thrown when vote after proxy assignment");
         }).then(function() {
-            return inst.vote(1, {from: accounts[8]})
+            return inst.vote(0, {from: accounts[2]});
+        }).then(function() {
+            return inst.vote(1, {from: accounts[8]});
+        }).then(function() {
+            return inst.vote(1, {from: accounts[8]});}).then(function() {throw new Error();
+        }).catch(function(err) {
+            assert(err.toString().indexOf('invalid opcode') != -1, "no error thrown when double vote");
         }).then(function() {
             return inst.getProposalVoteCount.call(0);
         }).then(function(value) {
