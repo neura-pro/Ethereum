@@ -13,7 +13,7 @@ module.exports = function(deployer) {
   //deployer.deploy(ProofOfExistence1);
   //deployer.deploy(ProofOfExistence2);
   //deployer.deploy(ProofOfExistence3);
-  deployer.deploy(Ballot, [web3.sha3("Saab"), web3.sha3("Volvo"), web3.sha3("BMW")]);
+  //deployer.deploy(Ballot, [web3.sha3("Saab"), web3.sha3("Volvo"), web3.sha3("BMW")]);
   deployer.deploy(Ballot);
   //deployer.deploy(BallotOrg);
 };
