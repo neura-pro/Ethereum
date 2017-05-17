@@ -1,23 +1,6 @@
 pragma solidity ^0.4.11;
 
-contract Token { 
-    mapping (address => uint) public coinBalanceOf;
-    event CoinTransfer(address sender, address receiver, uint amount);
-
-  /* Initializes contract with initial supply tokens to the creator of the contract */
-  function Token(uint supply) {
-        coinBalanceOf[msg.sender] = supply;
-    }
-
-  /* Very simple trade function */
-    function sendCoin(address receiver, uint amount) returns(bool sufficient) {
-        if (coinBalanceOf[msg.sender] < amount) return false;
-        coinBalanceOf[msg.sender] -= amount;
-        coinBalanceOf[receiver] += amount;
-        CoinTransfer(msg.sender, receiver, amount);
-        return true;
-    }
-}
+import "./Token.sol";
 
 contract Crowdsale {
     address public beneficiary;
@@ -25,7 +8,7 @@ contract Crowdsale {
     uint public amountRaised;
     uint public deadline;
     uint public price;
-    Token public tokenReward;
+    Token public token;
     Funder[] public funders;
 
     event FundTransfer(address backer, uint amount, bool isContribution);
@@ -35,12 +18,47 @@ contract Crowdsale {
         uint amount;
     }
 
-    function Crowdsale(address _beneficiary, uint _fundingGoal, uint _duration, uint _price, Token _reward) {
-        beneficiary = _beneficiary;
+    function Crowdsale(uint _fundingGoal, uint _duration, uint _price, uint _reward) {
+        beneficiary = msg.sender;
         fundingGoal = _fundingGoal;
         deadline = now + _duration * 1 minutes;
         price = _price;
-        tokenReward = Token(_reward);
+        token = new Token(_reward);
+    }
+
+    function contribute() payable {
+        uint amount = msg.value;
+        funders.push(Funder({
+            addr: msg.sender,
+            amount: amount
+        }));
+        amountRaised += amount;
+        token.sendCoin(msg.sender, amount * price);
+        FundTransfer(msg.sender, amount, true);
+    }
+
+    function getTokenBalance(address addr) constant returns(uint) {
+        return token.getBalance(addr);
+    }
+
+    modifier afterDeadline() {
+        if (now >= deadline) {
+            _;
+        }
+    }
+
+    function checkGoalReached() afterDeadline {
+        if (amountRaised >= fundingGoal) {
+            beneficiary.transfer(amountRaised);
+            FundTransfer(beneficiary, amountRaised, false);
+        } else {
+            //FundTransfer(0, 11, false);
+            for (uint i = 0; i < funders.length; i++) {
+              funders[i].addr.transfer(funders[i].amount);  
+              FundTransfer(funders[i].addr, funders[i].amount, false);
+            }               
+        }
+        suicide(beneficiary);
     }
 
 }
